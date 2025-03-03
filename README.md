@@ -1,2 +1,2 @@
-# CodingCahllenge
-Coding Challenge i got from InnoPeak 
+# CodingChallenge
+Coding Challenge I got from InnoPeak 
