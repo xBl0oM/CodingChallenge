@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Lead {
+  id         String   @id @default(uuid())
+  name       String
+  sex        String
+  gender     String
+  address    String
+  leadSource String
+  createdAt  DateTime @default(now())
+
+  // Add this relation field to link Customers
+  customer Customer?
+}
+
+model Customer {
+  id          String   @id @default(uuid())
+  leadId      String   @unique
+  convertedAt DateTime @default(now())
+
+  // Correct the relation by adding the `@relation` attribute
+  lead Lead @relation(fields: [leadId], references: [id])
+}
