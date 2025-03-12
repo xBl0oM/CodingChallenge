@@ -7,7 +7,6 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 // Get all leads (protected)
-// Get all leads (accessible by all logged-in users)
 router.get("/", authMiddleware, async (req, res) => {
     try {
         const leads = await prisma.lead.findMany();

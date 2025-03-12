@@ -38,6 +38,8 @@
   
 
   .editBtn {
+    background-color: #154b97;
+    color: #fff;
     margin-right: 0.5rem;
     padding: 0.4rem 0.8rem;
     border: none;
@@ -46,7 +48,7 @@
     
   }
   .editBtn:hover{
-    background-color: #b5b5b5;
+    background-color: #123f7e;
   }
   
   .deleteBtn {
@@ -109,6 +111,16 @@
     border-radius: 8px;
   }
   .addLeadBtn:hover{
-background-color: #000000;
+    background-color: #000000;
   }
-  
+  .convertBtn{
+    background-color: #22a039;
+    color: #fff;
+    margin-left:1vw;
+    padding:1vh;
+    border-radius:8px;
+    border:none;
+  }
+  .convertBtn:hover{
+    background-color: #1a7f2d;
+  }

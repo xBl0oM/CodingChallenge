@@ -39,11 +39,9 @@ export default function ProtectedPage() {
     return <div className={styles.loader}>Loading...</div>;
   }
 
- 
   const handleRowClick = (lead) => {
     setSelectedLead(lead);
   };
-
 
   const closeModal = () => {
     setSelectedLead(null);
@@ -63,6 +61,41 @@ export default function ProtectedPage() {
   // Edit a lead (manager only)
   const handleEdit = (leadId) => {
     router.push(`/edit-lead/${leadId}`);
+  };
+
+  // Convert to Customer (manager only)
+  const handleConvert = async (leadId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/customers/convert/${leadId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      
+      
+
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Conversion failed");
+        }
+        
+        setLeads((prev) => prev.filter((lead) => lead.id !== leadId));
+        alert("Lead converted to customer successfully.");
+      } else {
+       
+        const text = await response.text();
+        console.error("Response text:", text);
+        throw new Error("Non-JSON response received");
+      }
+    } catch (error) {
+      console.error("Error during conversion:", error);
+      alert("Error converting lead: " + error.message);
+    }
   };
 
   return (
@@ -86,13 +119,9 @@ export default function ProtectedPage() {
               <td>{lead.name}</td>
               <td>{lead.leadSource}</td>
               {role === "MANAGER" && (
-                <td
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
+                <td onClick={(e) => e.stopPropagation()}>
                   <button
-                    className={`${styles.editBtn} ${styles.editBtn}`}
+                    className={`${styles.editBtn}`}
                     onClick={() => handleEdit(lead.id)}
                   >
                     Edit
@@ -105,7 +134,7 @@ export default function ProtectedPage() {
                   </button>
                   <button
                     className={`${styles.actionBtn} ${styles.convertBtn}`}
-                    onClick={() => handleDelete(lead.id)}
+                    onClick={() => handleConvert(lead.id)}
                   >
                     Convert to customer
                   </button>

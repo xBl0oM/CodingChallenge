@@ -20,12 +20,17 @@ model Lead {
 }
 
 model Customer {
-  id          String  @id @default(uuid())
-  leadId      String  @unique
-  convertedAt DateTime @default(now())
-
-  lead        Lead    @relation(fields: [leadId], references: [id])
+  id         String   @id @default(uuid())
+  name       String
+  sex        String
+  gender     String
+  address    String
+  leadSource String
+  leadId     String?  @unique
+  lead       Lead?    @relation(fields: [leadId], references: [id])
 }
+
+
 
 model User {
   id       String  @id @default(uuid())
