@@ -1,12 +1,12 @@
-import { MantineProvider } from '@mantine/core';
-import Layout from '../components/Layout';
 
-export default function App({ Component, pageProps }) {
+import '../styles/global.css';
+import Navbar from '../components/Navbar';
+
+export default function MyApp({ Component, pageProps }) {
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </MantineProvider>
+    <>
+      <Navbar />
+      <Component {...pageProps} />
+    </>
   );
 }

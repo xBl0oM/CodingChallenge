@@ -1,9 +1,8 @@
-// pages/register.js
 import { useState } from "react";
-import { TextInput, PasswordInput, Button, Container, Title, Notification, Text } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
-import Link from "next/link"; 
+import Link from "next/link";
+import styles from "../styles/register.module.css"; 
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -15,7 +14,10 @@ export default function Register() {
     e.preventDefault();
     setError("");
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, { email, password });
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
+        email,
+        password,
+      });
       if (response.data.message) {
         router.push("/login");
       }
@@ -25,32 +27,48 @@ export default function Register() {
   };
 
   return (
-    <Container size="sm" my="xl">
-      <Title align="center">Register</Title>
-      <form onSubmit={handleRegister}>
-        <TextInput
-          label="Email"
+    <div className={styles.container}>
+      <h1 className={styles.title}>Register</h1>
+      <form onSubmit={handleRegister} className={styles.form}>
+        <label htmlFor="email" className={styles.label}>
+          Email
+        </label>
+        <input
+          type="email"
+          id="email"
           placeholder="your.email@example.com"
           value={email}
-          onChange={(e) => setEmail(e.currentTarget.value)}
+          onChange={(e) => setEmail(e.target.value)}
           required
+          className={styles.input}
         />
-        <PasswordInput
-          label="Password"
+
+        <label htmlFor="password" className={styles.label}>
+          Password
+        </label>
+        <input
+          type="password"
+          id="password"
           placeholder="Enter a strong password"
           value={password}
-          onChange={(e) => setPassword(e.currentTarget.value)}
+          onChange={(e) => setPassword(e.target.value)}
           required
-          mt="md"
+          className={styles.input}
         />
-        {error && <Notification color="red" mt="md">{error}</Notification>}
-        <Button fullWidth mt="xl" type="submit">Register</Button>
+
+        {error && <p className={styles.error}>{error}</p>}
+
+        <button type="submit" className={styles.submitBtn}>
+          Register
+        </button>
       </form>
 
-      {/* Add login link below the register button */}
-      <Text align="center" mt="md">
-        Already have an account? <Link href="/login" passHref><Text span color="blue" style={{ cursor: "pointer" }}>Login here</Text></Link>
-      </Text>
-    </Container>
+      <p className={styles.text}>
+        Already have an account?{" "}
+        <Link href="/login" className={styles.link}>
+          Login here
+        </Link>
+      </p>
+    </div>
   );
 }

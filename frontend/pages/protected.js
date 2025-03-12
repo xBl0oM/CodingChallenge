@@ -1,86 +1,152 @@
+// pages/protected.js
 import { useEffect, useState } from "react";
-import { Container, Title, Text, Button, Loader } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
+import styles from "../styles/protected.module.css";
 
 export default function ProtectedPage() {
-  const [data, setData] = useState([]);
+  const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isManager, setIsManager] = useState(false);
+  const [checkedAuth, setCheckedAuth] = useState(false);
+  const [role, setRole] = useState("");
+  const [selectedLead, setSelectedLead] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-    console.log("Logged in user role:", role);  // Log the role for debugging
-
     if (!token) {
       router.push("/login");
       return;
     }
-    
-    if (role === "MANAGER") {
-      setIsManager(true);
-    }
-    
-    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/leads`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(response => {
-        setData(response.data);
+    setCheckedAuth(true);
+    setRole(localStorage.getItem("role"));
+
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/leads`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        setLeads(res.data);
         setLoading(false);
       })
-      .catch(error => {
-        console.error("Error fetching leads:", error);
+      .catch((err) => {
+        console.error("Error fetching leads:", err);
         setLoading(false);
       });
   }, [router]);
 
-  const deleteLead = (id) => {
-    const token = localStorage.getItem("token");
-    axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/leads/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(() => {
-        setData(data.filter(lead => lead.id !== id));
-      })
-      .catch(error => console.error("Error deleting lead:", error));
+  if (!checkedAuth || loading) {
+    return <div className={styles.loader}>Loading...</div>;
+  }
+
+ 
+  const handleRowClick = (lead) => {
+    setSelectedLead(lead);
   };
 
-  if (loading) return <Loader />;
+
+  const closeModal = () => {
+    setSelectedLead(null);
+  };
+
+  // Delete a lead (manager only)
+  const handleDelete = (leadId) => {
+    const token = localStorage.getItem("token");
+    axios
+      .delete(`${process.env.NEXT_PUBLIC_API_URL}/leads/${leadId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(() => setLeads((prev) => prev.filter((l) => l.id !== leadId)))
+      .catch((err) => console.error(err));
+  };
+
+  // Edit a lead (manager only)
+  const handleEdit = (leadId) => {
+    router.push(`/edit-lead/${leadId}`);
+  };
 
   return (
-    <Container my="xl">
-      <Title>Leads</Title>
-      {data.length > 0 ? (
-        data.map(lead => (
-          <div key={lead.id}>
-            <Text mt="md">{lead.name} - {lead.leadSource}</Text>
-            {isManager && (
-              <>
-                <Button color="red" onClick={() => deleteLead(lead.id)}>Delete</Button>
-                <Button onClick={() => router.push(`/edit-lead/${lead.id}`)}>Edit</Button>
-              </>
-            )}
+    <div className={styles.leadsPage}>
+      <h1 className={styles.pageTitle}>Leads Page</h1>
+      <table className={styles.leadsTable}>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Lead Source</th>
+            {role === "MANAGER" && <th>Actions</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {leads.map((lead) => (
+            <tr
+              key={lead.id}
+              className={styles.leadRow}
+              onClick={() => handleRowClick(lead)}
+            >
+              <td>{lead.name}</td>
+              <td>{lead.leadSource}</td>
+              {role === "MANAGER" && (
+                <td
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <button
+                    className={`${styles.editBtn} ${styles.editBtn}`}
+                    onClick={() => handleEdit(lead.id)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className={`${styles.actionBtn} ${styles.deleteBtn}`}
+                    onClick={() => handleDelete(lead.id)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className={`${styles.actionBtn} ${styles.convertBtn}`}
+                    onClick={() => handleDelete(lead.id)}
+                  >
+                    Convert to customer
+                  </button>
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {selectedLead && (
+        <div className={styles.modalOverlay} onClick={closeModal}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.closeBtn} onClick={closeModal}>
+              X
+            </button>
+            <h2>{selectedLead.name}</h2>
+            <p>
+              <strong>Sex:</strong> {selectedLead.sex}
+            </p>
+            <p>
+              <strong>Gender:</strong> {selectedLead.gender}
+            </p>
+            <p>
+              <strong>Address:</strong> {selectedLead.address}
+            </p>
+            <p>
+              <strong>Lead Source:</strong> {selectedLead.leadSource}
+            </p>
           </div>
-        ))
-      ) : (
-        <Text mt="md">No leads available.</Text>
+        </div>
       )}
 
-      {isManager && (
-        <Button mt="xl" onClick={() => router.push("/add-lead")}>
-          Add New Lead
-        </Button>
+      {role === "MANAGER" && (
+        <button
+          className={styles.addLeadBtn}
+          onClick={() => router.push("/add-lead")}
+        >
+          Add Lead
+        </button>
       )}
-
-      <Button mt="xl" onClick={() => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        router.push("/login");
-      }}>
-        Logout
-      </Button>
-    </Container>
+    </div>
   );
 }

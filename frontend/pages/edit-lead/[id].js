@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { TextInput, Button, Card, Title, Text } from '@mantine/core';
-import axios from 'axios';
 import { useRouter } from 'next/router';
+import axios from 'axios';
+import styles from '../../styles/editLead.module.css';
 
 export default function EditLead() {
   const router = useRouter();
@@ -14,13 +14,13 @@ export default function EditLead() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!id) return;
+    if (!id) return; 
     const token = localStorage.getItem('token');
     if (!token) {
       router.push('/login');
       return;
     }
-    // Fetch lead by ID
+    
     axios
       .get(`${process.env.NEXT_PUBLIC_API_URL}/leads/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -44,69 +44,78 @@ export default function EditLead() {
       router.push('/login');
       return;
     }
-
     try {
       await axios.put(
         `${process.env.NEXT_PUBLIC_API_URL}/leads/${id}`,
         { name, sex, gender, address, leadSource },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      router.push('/leads');
+      router.push('/protected');
     } catch (err) {
       setError(err.response?.data?.error || 'Error updating lead');
     }
   };
 
   return (
-    <Card
-      shadow="sm"
-      p="lg"
-      radius="md"
-      withBorder
-      style={{ maxWidth: 500, margin: '40px auto' }}
-    >
-      <Title order={2} mb="md">Edit Lead</Title>
-      <form onSubmit={handleSubmit}>
-        <TextInput
-          label="Name"
+    <div className={styles.card}>
+      <h2 className={styles.title}>Edit Lead</h2>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <label htmlFor="name" className={styles.label}>Name</label>
+        <input
+          type="text"
+          id="name"
+          className={styles.input}
           value={name}
-          onChange={(e) => setName(e.currentTarget.value)}
+          onChange={(e) => setName(e.target.value)}
           required
-          mb="sm"
         />
-        <TextInput
-          label="Sex"
+
+        <label htmlFor="sex" className={styles.label}>Sex</label>
+        <input
+          type="text"
+          id="sex"
+          className={styles.input}
           value={sex}
-          onChange={(e) => setSex(e.currentTarget.value)}
+          onChange={(e) => setSex(e.target.value)}
           required
-          mb="sm"
         />
-        <TextInput
-          label="Gender"
+
+        <label htmlFor="gender" className={styles.label}>Gender</label>
+        <input
+          type="text"
+          id="gender"
+          className={styles.input}
           value={gender}
-          onChange={(e) => setGender(e.currentTarget.value)}
+          onChange={(e) => setGender(e.target.value)}
           required
-          mb="sm"
         />
-        <TextInput
-          label="Address"
+
+        <label htmlFor="address" className={styles.label}>Address</label>
+        <input
+          type="text"
+          id="address"
+          className={styles.input}
           value={address}
-          onChange={(e) => setAddress(e.currentTarget.value)}
+          onChange={(e) => setAddress(e.target.value)}
           required
-          mb="sm"
         />
-        <TextInput
-          label="Lead Source"
+
+        <label htmlFor="leadSource" className={styles.label}>Lead Source</label>
+        <input
+          type="text"
+          id="leadSource"
+          className={styles.input}
           value={leadSource}
-          onChange={(e) => setLeadSource(e.currentTarget.value)}
+          onChange={(e) => setLeadSource(e.target.value)}
           required
-          mb="sm"
         />
-        {error && <Text color="red" mb="sm">{error}</Text>}
-        <Button type="submit" fullWidth>
+
+        {error && <p className={styles.error}>{error}</p>}
+
+        <button type="submit" className={styles.submitBtn}>
           Update
-        </Button>
+        </button>
       </form>
-    </Card>
+    </div>
   );
 }

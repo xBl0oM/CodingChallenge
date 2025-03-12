@@ -1,0 +1,114 @@
+
+.leadsPage {
+    background-color: #f2f2f2;
+    min-height: 100vh;
+    padding: 2rem 0;
+    text-align: center; 
+  }
+  
+  .pageTitle {
+    margin-bottom: 1rem;
+  }
+  
+
+  .leadsTable {
+    margin: 0 auto; 
+    width: 80%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+
+  .leadsTable th {
+    background-color: #f2f2f2;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+  }
+  
+  .leadsTable td {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+  }
+
+  .leadRow:hover {
+    background-color: #d7d6d8;
+    cursor: pointer;
+  }
+  
+
+  .editBtn {
+    margin-right: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border: none;
+    padding:1vh;
+    border-radius:8px;
+    
+  }
+  .editBtn:hover{
+    background-color: #b5b5b5;
+  }
+  
+  .deleteBtn {
+    background-color: #ff4f4f;
+    color: #fff;
+    margin-left:1vw;
+    padding:1vh;
+    border-radius:8px;
+    border:none;
+    
+  }
+  
+  .deleteBtn:hover {
+    background-color: #d93d3d;
+  }
+  
+
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  
+  
+  .modal {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+  }
+  
+
+  .closeBtn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+  }
+  
+ 
+  .addLeadBtn {
+    margin-top: 2rem;
+    padding: 0.5rem 1rem;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  .addLeadBtn:hover{
+background-color: #000000;
+  }
+  

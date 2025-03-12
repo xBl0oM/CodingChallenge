@@ -1,4 +1,3 @@
-// pages/leads/index.js
 import { useEffect, useState } from 'react';
 import {
   Avatar,
