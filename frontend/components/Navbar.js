@@ -35,7 +35,6 @@ export default function Navbar() {
       { href: '/register', label: 'Register' },
     ];
   } else {
-    // Default links when logged in
     links = [
       { href: '/protected', label: 'Leads' },
       { href: '/customer', label: 'Customers' },

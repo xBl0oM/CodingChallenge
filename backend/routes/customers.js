@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const { authMiddleware, managerMiddleware } = require('..//authMiddleware');
+const { authMiddleware, managerMiddleware } = require('../middleware/authMiddleware');
 
 // GET /customers - List all customers
 router.get('/', authMiddleware, async (req, res) => {
@@ -16,17 +16,16 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
-// POST /customers/convert/:id - Convert a lead into a customer
 router.post('/convert/:id', authMiddleware, managerMiddleware, async (req, res) => {
   try {
-    const { id } = req.params; // Use the UUID directly
-    // Fetch the lead by its id
+    const { id } = req.params; 
+    
     const lead = await prisma.lead.findUnique({ where: { id } });
     if (!lead) {
       return res.status(404).json({ error: 'Lead not found' });
     }
 
-    // Create a new customer using the lead's data
+    
     const customer = await prisma.customer.create({
       data: {
         name: lead.name,
@@ -34,7 +33,7 @@ router.post('/convert/:id', authMiddleware, managerMiddleware, async (req, res) 
         gender: lead.gender,
         address: lead.address,
         leadSource: lead.leadSource,
-        // Add any additional fields as needed
+        
       },
     });
 

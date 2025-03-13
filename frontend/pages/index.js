@@ -1,14 +1,4 @@
 import { useEffect, useState } from 'react';
-import {
-  Avatar,
-  Container,
-  Group,
-  Loader,
-  MantineProvider,
-  Text,
-  Title,
-  rem,
-} from '@mantine/core';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
@@ -39,56 +29,59 @@ export default function LeadsPage() {
   }, [router]);
 
   if (loading) {
-    return <Loader />;
+    return (
+      <div style={{ textAlign: 'center', padding: '2rem' }}>Loading...</div>
+    );
   }
 
   return (
-    <MantineProvider
-      theme={{
-        // Optionally override Mantine's theme for this page
-        // or just rely on your global theme
+    <div
+      style={{
+        backgroundColor: '#F9F1FF',
+        minHeight: '100vh',
+        padding: '2rem 0',
       }}
     >
-      {/* 
-        Wrap the main content in a container with a light background color.
-        Adjust the color/spacing to your preference.
-      */}
-      <div
-        style={{
-          backgroundColor: '#F9F1FF', // soft pink/purple background
-          minHeight: '100vh',
-          padding: '2rem 0',
-        }}
-      >
-        <Title align="center" mb="xl">
-          Leads Page
-        </Title>
+      <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        Leads Page
+      </h1>
 
-        <Container size="md">
-          {leads.map((lead) => (
-            <Group
-              key={lead.id}
-              spacing="md"
-              p="md"
-              mb="sm"
-              // White background "card" look for each lead
+      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        {leads.map((lead) => (
+          <div
+            key={lead.id}
+            style={{
+              backgroundColor: '#fff',
+              borderRadius: '8px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '1rem',
+              marginBottom: '1rem',
+            }}
+          >
+            <div
               style={{
-                backgroundColor: '#fff',
-                borderRadius: rem(8),
-                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: '#ccc',
+                display: 'flex',
+                justifyContent: 'center',
                 alignItems: 'center',
+                marginRight: '1rem',
+                fontSize: '1.2rem',
+                fontWeight: 'bold',
               }}
             >
-              <Avatar radius="xl">
-                {lead.name?.charAt(0).toUpperCase() || 'U'}
-              </Avatar>
-              <Text size="md" weight={500}>
-                {lead.name}
-              </Text>
-            </Group>
-          ))}
-        </Container>
+              {lead.name?.charAt(0).toUpperCase() || 'U'}
+            </div>
+            <span style={{ fontSize: '1rem', fontWeight: '500' }}>
+              {lead.name}
+            </span>
+          </div>
+        ))}
       </div>
-    </MantineProvider>
+    </div>
   );
 }
